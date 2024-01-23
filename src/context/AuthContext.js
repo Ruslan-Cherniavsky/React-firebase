@@ -8,6 +8,9 @@ import {
   sendPasswordResetEmail,
   updateEmail,
   updatePassword,
+  sendEmailVerification,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth"
 
 const AuthContext = React.createContext()
@@ -44,6 +47,24 @@ export function AuthProvider({children}) {
     return updatePassword(auth.currentUser, email)
   }
 
+  function sendCurrentEmailVerification() {
+    try {
+      sendEmailVerification(auth.currentUser)
+      console.log("Verification email sent successfully")
+    } catch (error) {
+      console.error("Error sending verification email: ", error)
+    }
+  }
+
+  const signInWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider()
+      await signInWithPopup(auth, provider)
+    } catch (error) {
+      console.error("Error signing in with Google: ", error)
+    }
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user)
@@ -61,6 +82,8 @@ export function AuthProvider({children}) {
     resetPassword,
     updateCurrentEmail,
     updateCurrentPassword,
+    sendCurrentEmailVerification,
+    signInWithGoogle,
   }
   return (
     <AuthContext.Provider value={value}>

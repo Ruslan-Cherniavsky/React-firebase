@@ -1,12 +1,17 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {Alert, Button, Card} from "react-bootstrap"
 import {Link, useNavigate} from "react-router-dom"
 import {useAuth} from "../context/AuthContext"
+import {auth} from "../firebase"
 
 export default function Dashbord() {
   const navigate = useNavigate()
   const [error, setError] = useState("")
   const {currentUser, logout} = useAuth()
+
+  useEffect(() => {
+    console.log(auth.currentUser.emailVerified)
+  }, [])
 
   async function handleLogOut() {
     setError("")
@@ -29,10 +34,12 @@ export default function Dashbord() {
             Ubdate Profile
           </Link>
           <div className="w-100 text-center mt-2">
-            <Button variant="link" onClick={handleLogOut}>
+            <Link variant="link" onClick={handleLogOut}>
               Log out
-            </Button>
-            <Link to="/login">Log in</Link>
+            </Link>
+          </div>
+          <div className="w-100 text-center mt-2">
+            {/* <Link to="/login">Log in</Link> */}
           </div>
         </Card.Body>
       </Card>

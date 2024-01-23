@@ -3,8 +3,8 @@ import {Navigate, Route} from "react-router-dom"
 import {auth} from "../firebase"
 import {useAuth} from "../context/AuthContext"
 
-export default function PrivateRoute({children}) {
+export default function PrivateRouteUnverified({children}) {
   const {currentUser} = useAuth()
 
-  return currentUser ? children : <Navigate to="/login" />
+  return currentUser?.emailVerified ? children : <Navigate to="/login" />
 }

@@ -40,13 +40,6 @@ export default function UpdateProfile() {
       .finally(() => {
         setLoading(false)
       })
-
-    try {
-      //   await signup(emailRef.current.value, passwordRef.current.value)
-      navigate("/")
-    } catch (error) {
-      setError("Failed to create an account")
-    }
   }
 
   return (
