@@ -1,17 +1,15 @@
-import React, {useRef, useState, useEffect} from "react"
+import React, {useRef, useState} from "react"
 import {Form, Button, Card, Alert} from "react-bootstrap"
-import {useAuth} from "../context/AuthContext"
+import {useAuthContext} from "../../../context/AuthContext"
 import {Link, useNavigate} from "react-router-dom"
-import {auth} from "../firebase"
 
 export default function Login() {
   const navigate = useNavigate()
   const emailRef = useRef()
   const passwordRef = useRef()
-  const {login, currentUser} = useAuth()
+  const {login, signInWithGoogle} = useAuthContext()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [notVerifiedUser, setNotVerifiedUser] = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -20,18 +18,33 @@ export default function Login() {
       setError("")
       await login(emailRef.current.value, passwordRef.current.value)
 
-      if (!auth.currentUser.emailVerified) {
-        // not verified user
-        setNotVerifiedUser(true)
-        return setError("Please verify your email before logging in.")
-      }
-
       navigate("/")
     } catch (error) {
-      setError("Failed to log in")
+      console.log(error)
+      if (error.code === "auth/too-many-requests") {
+        setError(
+          "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later."
+        )
+      } else {
+        setError("Failed to log in")
+      }
+    } finally {
+      setLoading(false)
     }
+  }
 
-    setLoading(false)
+  async function handleGoogleLogin() {
+    try {
+      setLoading(true)
+      setError("")
+      await signInWithGoogle()
+      navigate("/")
+    } catch (error) {
+      console.error("Failed to log in with Google", error)
+      setError("Failed to log in with Google. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -40,7 +53,6 @@ export default function Login() {
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
@@ -51,7 +63,13 @@ export default function Login() {
               <Form.Control type="password" ref={passwordRef} required />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
-              Log In
+              {loading ? "Logging In..." : "Log In"}
+            </Button>
+            <Button
+              onClick={handleGoogleLogin}
+              disabled={loading}
+              className="w-100 mt-3">
+              {loading ? "Logging In with Google..." : "Log In with Google"}
             </Button>
           </Form>
           <div className="w-100 text-center mt-2">
@@ -60,12 +78,6 @@ export default function Login() {
           <div className="w-100 text-center mt-2">
             Need an account? <Link to="/signup">Sign Up</Link>
           </div>
-          {notVerifiedUser ? (
-            <div className="w-100 text-center mt-2">
-              Didn't receive the email?{" "}
-              <Link to="/resend-verification">Resend Verification Email</Link>
-            </div>
-          ) : null}
         </Card.Body>
       </Card>
     </>

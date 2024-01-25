@@ -1,7 +1,7 @@
 import {initializeApp} from "firebase/app"
-import {getAnalytics} from "firebase/analytics"
 import {getAuth} from "firebase/auth"
-import {getFirestore} from "firebase/firestore"
+// import {getAnalytics} from "firebase/analytics"
+// import {getFirestore} from "firebase/firestore"
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -13,20 +13,21 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASURMENT_ID,
 }
 
-try {
-  const app = initializeApp(firebaseConfig)
-  const analytics = getAnalytics(app)
-  const auth = getAuth(app)
-  const db = getFirestore(app)
+// try {
+//   const app = initializeApp(firebaseConfig)
+//    const analytics = getAnalytics(app)
+//    const auth = getAuth(app)
+//    const db = getFirestore(app)
 
-  console.log("Firebase initialized successfully")
-} catch (error) {
-  console.error("Error initializing Firebase: ", error)
-}
+//   console.log("Firebase initialized successfully")
+// } catch (error) {
+//   console.error("Error initializing Firebase: ", error)
+// }
 
 const app = initializeApp(firebaseConfig)
-const analytics = getAnalytics(app)
 const auth = getAuth(app)
-const db = getFirestore(app)
+// const analytics = getAnalytics(app)
+// const db = getFirestore(app)
 
-export {auth, app, analytics, db}
+export {auth}
+// export { app, analytics, db}

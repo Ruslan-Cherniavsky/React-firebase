@@ -1,17 +1,13 @@
 import React, {useEffect, useState} from "react"
 import {Alert, Button, Card} from "react-bootstrap"
 import {Link, useNavigate} from "react-router-dom"
-import {useAuth} from "../context/AuthContext"
-import {auth} from "../firebase"
+import {useAuthContext} from "../../context/AuthContext"
+import {auth} from "../../services/firebaseConfig"
 
 export default function Dashbord() {
   const navigate = useNavigate()
   const [error, setError] = useState("")
-  const {currentUser, logout} = useAuth()
-
-  useEffect(() => {
-    console.log(auth.currentUser.emailVerified)
-  }, [])
+  const {currentUser, logout} = useAuthContext()
 
   async function handleLogOut() {
     setError("")
@@ -38,9 +34,7 @@ export default function Dashbord() {
               Log out
             </Link>
           </div>
-          <div className="w-100 text-center mt-2">
-            {/* <Link to="/login">Log in</Link> */}
-          </div>
+          <div className="w-100 text-center mt-2"></div>
         </Card.Body>
       </Card>
     </>

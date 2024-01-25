@@ -1,15 +1,14 @@
 import {Container} from "react-bootstrap"
-import Signup from "./Signup"
-import {AuthProvider} from "../context/AuthContext"
-import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom"
-import Dashbord from "./Dashbord"
-import Login from "./Login"
-import PrivateRouteUnverified from "./PrivateRouteUnverified"
-import ForgotPassword from "./ForgotPassword"
-import UpdateProfile from "./UpdateProfile"
-import CheckEmail from "./CheckEmail"
-import ResendVerification from "./ResendVerification"
-import PrivateRouteVerified from "./PrivateRouteVerified"
+import Signup from "./components/Auth/Signup/Signup"
+import {AuthProvider} from "./context/AuthContext"
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import Dashbord from "./components/Dashboard/Dashboard"
+import Login from "./components/Auth/Login/Login"
+import PrivateRouteUnverified from "./components/Auth/PrivateRoutes/PrivateRouteUnverified"
+import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPassword"
+import UpdateProfile from "./components/Auth/UpdateProfile/UpdateProfile"
+import CheckEmail from "./components/Auth/CheckEmail/CheckEmail"
+import PrivateRouteVerified from "./components/Auth/PrivateRoutes/PrivateRouteVerified"
 
 function App() {
   return (
@@ -30,9 +29,9 @@ function App() {
               <Route
                 path="/update-profile"
                 element={
-                  <PrivateRouteUnverified>
+                  <PrivateRouteVerified>
                     <UpdateProfile />
-                  </PrivateRouteUnverified>
+                  </PrivateRouteVerified>
                 }></Route>
               <Route path="/signup" element={<Signup />}></Route>
               <Route
@@ -44,15 +43,6 @@ function App() {
                 element={
                   <PrivateRouteUnverified>
                     <CheckEmail />
-                  </PrivateRouteUnverified>
-                }
-              />
-              {/* ... other routes ... */}
-              <Route
-                path="/resend-verification"
-                element={
-                  <PrivateRouteUnverified>
-                    <ResendVerification />
                   </PrivateRouteUnverified>
                 }
               />

@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from "react"
-import {auth} from "../firebase"
+import {auth} from "../services/firebaseConfig"
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -11,16 +11,18 @@ import {
   sendEmailVerification,
   GoogleAuthProvider,
   signInWithPopup,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
 } from "firebase/auth"
 
 const AuthContext = React.createContext()
 
-export function useAuth() {
+export function useAuthContext() {
   return useContext(AuthContext)
 }
 
 export function AuthProvider({children}) {
-  const [currentUser, setCurrentUser] = useState()
+  const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
   function signup(email, password) {
@@ -43,26 +45,25 @@ export function AuthProvider({children}) {
     return updateEmail(auth.currentUser, email)
   }
 
-  function updateCurrentPassword(email) {
-    return updatePassword(auth.currentUser, email)
+  function updateCurrentPassword(newPassword) {
+    return updatePassword(auth.currentUser, newPassword)
+  }
+
+  function reauthenticateCurrentWithCredential(password) {
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      password
+    )
+    return reauthenticateWithCredential(auth.currentUser, credential)
   }
 
   function sendCurrentEmailVerification() {
-    try {
-      sendEmailVerification(auth.currentUser)
-      console.log("Verification email sent successfully")
-    } catch (error) {
-      console.error("Error sending verification email: ", error)
-    }
+    return sendEmailVerification(auth.currentUser)
   }
 
-  const signInWithGoogle = async () => {
-    try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
-    } catch (error) {
-      console.error("Error signing in with Google: ", error)
-    }
+  function signInWithGoogle() {
+    const provider = new GoogleAuthProvider()
+    return signInWithPopup(auth, provider)
   }
 
   useEffect(() => {
@@ -84,10 +85,11 @@ export function AuthProvider({children}) {
     updateCurrentPassword,
     sendCurrentEmailVerification,
     signInWithGoogle,
+    reauthenticateCurrentWithCredential,
   }
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? <p>Loading</p> : children}
     </AuthContext.Provider>
   )
 }
